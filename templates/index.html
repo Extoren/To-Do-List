@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>To-Do List</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <form action="/add_task" method="POST">
+            <input type="text" name="task" placeholder="Add a new task" {% if task_count >= task_limit %}disabled{% endif %}>
+            <button type="submit" {% if task_count >= task_limit %}disabled{% endif %}>Add</button>
+        </form>
+        
+        {% if task_count >= task_limit %}
+        <div class="popup">
+            <p>You have reached the limit</p>
+        </div>
+        {% endif %}
+
+        <div class="task-limit">Task limit: {{ task_limit }}</div>
+        <!-- ... Your existing HTML ... -->
+        <ul>
+            {% for index, task in enumerated_tasks %}
+                <li>
+                    {{ task }}
+                    <div class="button-container">
+                        <a href="/edit_task/{{ index }}" class="edit-button">Modify</a>
+                        <a href="/remove_task/{{ index }}" class="remove-button">Remove</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        {% if task_count >= task_limit %}
+        document.addEventListener("DOMContentLoaded", function() {
+            var popup = document.querySelector(".popup");
+            popup.style.display = "block";
+    
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 3000); // Hide the popup after 3 seconds
+        });
+        {% endif %}
+    </script>    
+</body>
+</html>
